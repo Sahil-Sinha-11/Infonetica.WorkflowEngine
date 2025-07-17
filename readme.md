@@ -2,6 +2,9 @@
 
 A minimal, extensible workflow engine built with ASP.NET Core 9.0. This project allows you to define, manage, and execute custom workflows via a simple REST API.
 
+> **Note:**
+> This project uses **Swagger** (via Swashbuckle) for interactive API documentation and testing. You can explore and test all endpoints using the Swagger UI.
+
 ## Features
 
 - **Define workflows** with custom states and actions.
@@ -37,6 +40,26 @@ A minimal, extensible workflow engine built with ASP.NET Core 9.0. This project 
 3. **Access the API documentation:**
 
    - Navigate to [https://localhost:7171/swagger](https://localhost:7171/swagger) (or the port shown in your terminal).
+
+## API Usage Example
+
+1.  **Create a Definition**: `POST /api/workflows/definitions`
+    ```json
+    {
+      "states": [
+        { "id": "new", "name": "New", "isInitial": true, "isFinal": false },
+        { "id": "processing", "name": "Processing", "isInitial": false, "isFinal": false },
+        { "id": "complete", "name": "Complete", "isInitial": false, "isFinal": true }
+      ],
+      "actions": [
+        { "id": "begin", "fromStates": ["new"], "toState": "processing" },
+        { "id": "finish", "fromStates": ["processing"], "toState": "complete" }
+      ]
+    }
+    ```
+2.  **Start an Instance**: `POST /api/workflows/instances/{definitionId}/start` (use the `id` returned from the previous step).
+3.  **Execute an Action**: `POST /api/workflows/instances/{instanceId}/execute/begin`.
+4.  **Inspect an Instance**: `GET /api/workflows/instances/{instanceId}`.
 
 ## API Overview
 
